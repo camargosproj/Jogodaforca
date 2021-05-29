@@ -5,9 +5,13 @@
 #include "forca.h"
 
 char palavrasecreta[TAMANHO_PALAVRA];
-char chutes[26];
-int chutesdados = 0;
-
+struct tentativas{
+    char letrasdigitadas[26];
+    int contadordechutes;
+} teste;
+struct jogadores{
+    char nome[20];
+}jogador1;
 
 int letraexiste(char letra) {
 
@@ -23,9 +27,9 @@ int letraexiste(char letra) {
 int chuteserrados() {
     int erros = 0;
 
-    for(int i = 0; i < chutesdados; i++) {
+    for(int i = 0; i < teste.contadordechutes; i++) {
 
-        if(!letraexiste(chutes[i])) {
+        if(!letraexiste(teste.letrasdigitadas[i])) {
             erros++;
         }
     }
@@ -51,13 +55,17 @@ int ganhou() {
 void abertura() {
     printf("/****************/\n");
     printf("/ Jogo de Forca */\n");
-    printf("/****************/\n\n");
+    printf("/****************/\n\n"); 
+
 }
 
 void chuta() {
     char chute;
-    printf("Tente uma letra");
+    printf("Tente uma letra: ");
     scanf(" %c", &chute);
+    printf("%d",teste.contadordechutes);
+
+    
 
     if(letraexiste(chute)) {
         printf("Você acertou: a palavra tem a letra %c\n\n", chute);
@@ -65,14 +73,14 @@ void chuta() {
         printf("\nVocê errou: a palavra NÃO tem a letra %c\n\n", chute);
     }
 
-    chutes[chutesdados] = chute;
-    chutesdados++;
+    teste.letrasdigitadas[teste.contadordechutes] = chute;
+    teste.contadordechutes++;
 }
 
 int jachutou(char letra) {
     int achou = 0;
-    for(int j = 0; j < chutesdados; j++) {
-        if(chutes[j] == letra) {
+    for(int j = 0; j < teste.contadordechutes; j++) {
+        if(teste.letrasdigitadas[j] == letra) {
             achou = 1;
             break;
         }
@@ -80,7 +88,7 @@ int jachutou(char letra) {
 
     return achou;
 }
-//Mostra a forca e traço para adicionar a letra
+//Mostra a forca e O traço para adicionar a letra
 void desenhaforca() {
 
     int erros = chuteserrados();
@@ -104,8 +112,6 @@ void desenhaforca() {
         }
 
     }
-    printf("%ld\n",strlen(palavrasecreta));
-
     printf("\n");
 
 }
