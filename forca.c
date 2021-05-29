@@ -57,15 +57,17 @@ void abertura() {
     printf("/ Jogo de Forca */\n");
     printf("/****************/\n\n"); 
 
+    printf("Digite o nome do primeiro Jogador: ");
+    scanf("%s",jogador1.nome);
+    printf("Olá %s, Bem-Vindo\n\n", jogador1.nome);
+
+
 }
 
 void chuta() {
     char chute;
     printf("Tente uma letra: ");
-    scanf(" %c", &chute);
-    printf("%d",teste.contadordechutes);
-
-    
+    scanf(" %c", &chute);    
 
     if(letraexiste(chute)) {
         printf("Você acertou: a palavra tem a letra %c\n\n", chute);
