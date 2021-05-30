@@ -1,18 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <time.h>
 #include "forca.h"
 
 char palavrasecreta[TAMANHO_PALAVRA];
+int fim;
 struct tentativas{
     char letrasdigitadas[26];
-    int contadordechutes;
-} teste;
+    int contador;
+    int erros;
+    int acertos;
+} tentativa;
 struct jogadores{
     char nome[20];
 }jogador1;
 
+bool tentarPalavra(){
+    char palavraCompleta[TAMANHO_PALAVRA];
+    if(tentativa.acertos == strlen(palavrasecreta)/2){
+        printf("Já sabe a palavra? Digite: ");
+        scanf("%s", palavraCompleta);
+        for(int i = 0; i < strlen(palavrasecreta); i++){
+        if(palavraCompleta[i] == palavrasecreta[i]){
+            fim = 1;
+            return false;
+        }else{
+            tentativa.erros = 5;
+        }
+    }
+    }
+}
 int letraexiste(char letra) {
 
     for(int j = 0; j < strlen(palavrasecreta); j++) {
@@ -25,16 +44,15 @@ int letraexiste(char letra) {
 }
 
 int chuteserrados() {
-    int erros = 0;
+   
+    for(int i = 0; i < tentativa.contador; i++) {
 
-    for(int i = 0; i < teste.contadordechutes; i++) {
-
-        if(!letraexiste(teste.letrasdigitadas[i])) {
-            erros++;
+        if(!letraexiste(tentativa.letrasdigitadas[i])) {
+            tentativa.erros++;
         }
     }
 
-    return erros;
+    return tentativa.erros;
 }
 
 int enforcou() {
@@ -44,15 +62,16 @@ int enforcou() {
 int ganhou() {
     for(int i = 0; i < strlen(palavrasecreta); i++) {
         if(!jachutou(palavrasecreta[i])) {
-            return 0;
+            return fim;
         }
+        
     }
 
-    return 1;
+    return fim;
 }
 
 
-void abertura() {
+void iniciar() {
     printf("/****************/\n");
     printf("/ Jogo de Forca */\n");
     printf("/****************/\n\n"); 
@@ -68,21 +87,24 @@ void chuta() {
     char chute;
     printf("Tente uma letra: ");
     scanf(" %c", &chute);    
+    printf("A palavra é %s \n",palavrasecreta);
+
 
     if(letraexiste(chute)) {
         printf("Você acertou: a palavra tem a letra %c\n\n", chute);
+        tentativa.acertos++;
     } else {
         printf("\nVocê errou: a palavra NÃO tem a letra %c\n\n", chute);
     }
 
-    teste.letrasdigitadas[teste.contadordechutes] = chute;
-    teste.contadordechutes++;
+    tentativa.letrasdigitadas[tentativa.contador] = chute;
+    tentativa.contador++;
 }
 
 int jachutou(char letra) {
     int achou = 0;
-    for(int j = 0; j < teste.contadordechutes; j++) {
-        if(teste.letrasdigitadas[j] == letra) {
+    for(int j = 0; j < tentativa.contador; j++) {
+        if(tentativa.letrasdigitadas[j] == letra) {
             achou = 1;
             break;
         }
@@ -178,15 +200,14 @@ void adicionapalavra() {
 //Inicio do programa
 int main() {
 
-    abertura();
+    iniciar();
     escolhepalavra();
 
     do {
-
+        tentarPalavra();
         desenhaforca();
         chuta();
-
-    } while (!ganhou() && !enforcou());
+    } while (!ganhou() && !enforcou() && tentarPalavra());
 
     if(ganhou()) {
         printf("\nParabéns, você ganhou!\n\n");
